@@ -184,32 +184,44 @@
 </div>
 
 <script>
-  function selectOpt(btn, type) {
-    const parent = btn.parentElement;
-    const buttons = parent.querySelectorAll('.btn-opt');
-    buttons.forEach(b => b.className = 'btn-opt');
-    btn.classList.add('selected-' + type);
-    calcularResumen();
-  }
+function enviarReporte() {
+  // 1. Obtener valores de los campos
+  const centro = document.querySelector('input[placeholder="Nombre de sucursal"]').value || 'N/A';
+  const fecha = document.querySelectorAll('.info-field input')[1].value || 'N/A';
+  const hora = document.querySelectorAll('.info-field input')[2].value || 'N/A';
+  const entrega = document.querySelectorAll('.info-field input')[3].value || 'N/A';
+  const recibe = document.querySelectorAll('.info-field input')[4].value || 'N/A';
+  const observaciones = document.querySelector('textarea').value || 'Sin observaciones';
 
-  function calcularResumen() {
-    const correctos = document.querySelectorAll('.selected-correct').length;
-    const incidencias = document.querySelectorAll('.selected-incidencia').length;
-    const totalEvaluados = correctos + incidencias;
-    
-    document.getElementById('total-eval').innerText = totalEvaluados;
-    document.getElementById('total-inc').innerText = incidencias;
-    
-    let pct = 100;
-    if (totalEvaluados > 0) {
-      pct = Math.round((correctos / totalEvaluados) * 100);
-    }
-    document.getElementById('pct-cumplimiento').innerText = pct + '%';
-  }
+  // 2. Obtener resumen de métricas
+  const total = document.getElementById('total-eval').innerText;
+  const incidencias = document.getElementById('total-inc').innerText;
+  const cumplimiento = document.getElementById('pct-cumplimiento').innerText;
 
-  function enviarReporte() {
-    alert("Función para compilar datos y abrir la API de WhatsApp web/móvil.");
-  }
+  // 3. Estructurar el mensaje para WhatsApp
+  let mensaje = `*CHECK-LIST CAMBIO DE TURNO (NOCHE A DÍA)*\n\n`;
+  mensaje += `📍 *Centro Comercial:* ${centro}\n`;
+  mensaje += `📅 *Fecha:* ${fecha} | *Hora:* ${hora}\n`;
+  mensaje += `👤 *Entrega:* ${entrega}\n`;
+  mensaje += `👤 *Recibe:* ${recibe}\n\n`;
+  mensaje += `📊 *RESUMEN:* \n`;
+  mensaje += `• Total Evaluados: ${total}\n`;
+  mensaje += `• Incidencias: ${incidencias}\n`;
+  mensaje += `• Cumplimiento: ${cumplimiento}\n\n`;
+  mensaje += `💬 *Observaciones:* ${observaciones}`;
+
+  // 4. (Opcional) Ingresa el número de teléfono con código de país (ejemplo México: 521234567890)
+  // Si lo dejas vacío (''), el usuario podrá seleccionar a qué contacto enviarlo manualmente.
+  const telefono = ""; 
+
+  // 5. Redireccionar a WhatsApp
+  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+}
+
+
+
+  
 </script>
 
 </body>
